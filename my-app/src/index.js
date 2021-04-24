@@ -2,19 +2,37 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+// render a single button
 class Square extends React.Component {
+  // initialize the state
+    constructor(props) {
+      // super needs to be called when defining the constructor of a subclass 
+      super(props);
+      this.state = {
+        value: null,
+      };
+    }
+
     render() {
       return (
-        <button className="square">
-          {/* TODO */}
+        // both onClick functions are the same. bottom one is shorter (better practice)
+        // <button className="square" onClick={function() {this.State({value: 'X'});}}> 
+        // re-render square whenever its clicked
+        <button className="square" 
+        onClick={() => this.setState({value: 'X'})}
+        >
+        {/* change to current state */}
+          {this.state.value}
         </button>
       );
     }
   }
   
+  // render whole gameboard with 9 squares
   class Board extends React.Component {
     renderSquare(i) {
-      return <Square />;
+      // pass prop value to square
+      return <Square value={i} />;
     }
   
     render() {
@@ -42,7 +60,8 @@ class Square extends React.Component {
       );
     }
   }
-  
+
+  // render bord with values
   class Game extends React.Component {
     render() {
       return (
