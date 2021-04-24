@@ -4,11 +4,25 @@ import './index.css';
 
 // render a single button
 class Square extends React.Component {
+  // initialize the state
+    constructor(props) {
+      // super needs to be called when defining the constructor of a subclass 
+      super(props);
+      this.state = {
+        value: null,
+      };
+    }
+
     render() {
       return (
-        <button className="square">
-        {/* show value */}
-          {this.props.value}
+        // both onClick functions are the same. bottom one is shorter (better practice)
+        // <button className="square" onClick={function() {this.State({value: 'X'});}}> 
+        // re-render square whenever its clicked
+        <button className="square" 
+        onClick={() => this.setState({value: 'X'})}
+        >
+        {/* change to current state */}
+          {this.state.value}
         </button>
       );
     }
