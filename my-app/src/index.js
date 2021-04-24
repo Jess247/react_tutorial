@@ -7,6 +7,7 @@ class Square extends React.Component {
     render() {
       return (
         <button className="square">
+        {/* show value */}
           {this.props.value}
         </button>
       );
@@ -16,6 +17,7 @@ class Square extends React.Component {
   // render whole gameboard with 9 squares
   class Board extends React.Component {
     renderSquare(i) {
+      // pass prop value to square
       return <Square value={i} />;
     }
   
