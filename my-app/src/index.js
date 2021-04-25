@@ -19,10 +19,10 @@ class Square extends React.Component {
         // <button className="square" onClick={function() {this.State({value: 'X'});}}> 
         // re-render square whenever its clicked
         <button className="square" 
-        onClick={() => this.setState({value: 'X'})}
+        onClick={() => this.props.onClick()}
         >
         {/* change to current state */}
-          {this.state.value}
+          {this.props.value}
         </button>
       );
     }
@@ -30,9 +30,26 @@ class Square extends React.Component {
   
   // render whole gameboard with 9 squares
   class Board extends React.Component {
+    constructor(props) {
+      // collect date from mulitble children (two child components comunicate)
+      // this declares the shared state in their parent
+      super(props);
+      this.state = {
+        squares: Array(9).fill(null),
+      };
+    }
+
+    // handle click
+    handleClick(i) {
+      const squares = this.state.squares.slice();
+      squares[i] = 'X';
+      this.setState({squares: squares})
+    }
+
     renderSquare(i) {
       // pass prop value to square
-      return <Square value={i} />;
+      return <Square value={this.state.squares[i]}
+      onClick={() => this.handleClick(i) } />;
     }
   
     render() {
