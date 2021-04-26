@@ -3,17 +3,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 // render a single button
-class Square extends React.Component {
-  // initialize the state
-    constructor(props) {
-      // super needs to be called when defining the constructor of a subclass 
-      super(props);
-      this.state = {
-        value: null,
-      };
-    }
+function Square(props){
+  // ______ only neaded with class ___________
+  // // initialize the state
+  //   constructor(props) {
+  //     // super needs to be called when defining the constructor of a subclass 
+  //     super(props);
+  //     this.state = {
+  //       value: null,
+  //     };
+  //   }
+  // ______ only neaded with class ___________
 
-    render() {
+    // render() {
       return (
         // both onClick functions are the same. bottom one is shorter (better practice)
         // <button className="square" onClick={function() {this.State({value: 'X'});}}> 
@@ -25,7 +27,7 @@ class Square extends React.Component {
           {this.props.value}
         </button>
       );
-    }
+    // }
   }
   
   // render whole gameboard with 9 squares
@@ -41,6 +43,7 @@ class Square extends React.Component {
 
     // handle click
     handleClick(i) {
+      // create copy of squares to change the value (immutability)
       const squares = this.state.squares.slice();
       squares[i] = 'X';
       this.setState({squares: squares})
