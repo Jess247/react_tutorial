@@ -21,10 +21,10 @@ function Square(props){
         // <button className="square" onClick={function() {this.State({value: 'X'});}}> 
         // re-render square whenever its clicked
         <button className="square" 
-        onClick={() => this.props.onClick()}
+        onClick={props.onClick}
         >
         {/* change to current state */}
-          {this.props.value}
+          {props.value}
         </button>
       );
     // }
@@ -36,8 +36,10 @@ function Square(props){
       // collect date from mulitble children (two child components comunicate)
       // this declares the shared state in their parent
       super(props);
+       // set x as default
       this.state = {
         squares: Array(9).fill(null),
+        xIsNext: true,
       };
     }
 
@@ -45,8 +47,11 @@ function Square(props){
     handleClick(i) {
       // create copy of squares to change the value (immutability)
       const squares = this.state.squares.slice();
-      squares[i] = 'X';
-      this.setState({squares: squares})
+      squares[i] = this.state.xIsNext ? 'X' : 'O';
+      this.setState({
+        squares: squares,
+        xIsNext: !this.state.xIsNext,
+      });
     }
 
     renderSquare(i) {
@@ -56,7 +61,8 @@ function Square(props){
     }
   
     render() {
-      const status = 'Next player: X';
+      const status = 'Next player: ' + 
+      (this.state.xIsNext ? 'X' :'O');
   
       return (
         <div>
