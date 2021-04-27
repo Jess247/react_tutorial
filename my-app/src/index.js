@@ -66,6 +66,7 @@ function Square(props){
     }
   
     render() {
+      // output the status of game 
       const winner = calculateWinner(this.state.squares);
       let status;
       if(winner) {
