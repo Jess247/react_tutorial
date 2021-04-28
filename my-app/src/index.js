@@ -32,52 +32,17 @@ function Square(props){
   
   // render whole gameboard with 9 squares
   class Board extends React.Component {
-    constructor(props) {
-      // collect date from mulitble children (two child components comunicate)
-      // this declares the shared state in their parent
-      super(props);
-       // set x as default
-      this.state = {
-        squares: Array(9).fill(null),
-        xIsNext: true,
-      };
-    }
-
-    // handle click
-    handleClick(i) {
-      // create copy of squares to change the value (immutability)
-      const squares = this.state.squares.slice();
-      
-      // ignore click if someone has won
-      if(calculateWinner(squares) || squares[i]) {
-        return;
-      }
-      squares[i] = this.state.xIsNext ? 'X' : 'O';
-      this.setState({
-        squares: squares,
-        xIsNext: !this.state.xIsNext,
-      });
-    }
+   
 
     renderSquare(i) {
       // pass prop value to square
-      return <Square value={this.state.squares[i]}
-      onClick={() => this.handleClick(i) } />;
+      return <Square value={this.props.squares[i]}
+      onClick={() => this.props.onClick(i) } />;
     }
   
-    render() {
-      // output the status of game 
-      const winner = calculateWinner(this.state.squares);
-      let status;
-      if(winner) {
-        status = "Winner: " + winner;
-      } else {
-        status = "Next Player: " + (this.state.xIsNext ? 'X' : 'O');
-      }
-  
+    render(){
       return (
         <div>
-          <div className="status">{status}</div>
           <div className="board-row">
             {this.renderSquare(0)}
             {this.renderSquare(1)}
@@ -100,15 +65,85 @@ function Square(props){
 
   // render bord with values
   class Game extends React.Component {
+    // history
+    constructor(props) {
+      super(props);
+      this.state =  {
+        history: [{
+          squares: Array(9).fill(null),
+        }],
+        stepNumber: 0,
+        xIsNext: true,
+      };
+    }
+
+    // handle click
+    handleClick(i) {
+      const history = this.state.history.slice(0, this.state.stepNumber + 1); // go back in time and delete "future"
+      const current = history[history.length - 1];
+      const squares = current.squares.slice();
+      
+      // ignore click if someone has won
+      if(calculateWinner(squares) || squares[i]) {
+        return;
+      }
+      squares[i] = this.state.xIsNext ? 'X' : 'O';
+      this.setState({
+        // concat doesnt mutate the array
+        history: history.concat([{
+          squares: squares,
+        }]),
+        stepNumber: history.length,
+        xIsNext: !this.state.xIsNext,
+      });
+    }
+
+    // update stepNumber of game to jump to
+    jumpTo(step) {
+      this.setState({
+        stepNumber: step,
+        xIsNext: (step % 2) === 0,
+      });
+    }
+
     render() {
+      // output the status and history of game 
+      const history = this.state.history;
+      const current = history[this.state.stepNumber];
+      const winner = calculateWinner(current.squares);
+
+      // mapp over history
+      const moves = history.map((step, move) => {
+        const desc = move ? 
+        'Go to move #' + move :
+        'Go to game start';
+        return(
+          // create a new list item for every move 
+          // keys are needed to differentiate each list item
+          <li key={move}>
+            <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          </li>
+        );
+      });
+
+      let status;
+      if(winner) {
+        status = "Winner: " + winner;
+      } else {
+        status = "Next Player: " + (this.state.xIsNext ? 'X' : 'O');
+      }
+
       return (
         <div className="game">
           <div className="game-board">
-            <Board />
+            <Board 
+              squares={current.squares}
+              onClick={(i) => this.handleClick(i)}
+            />
           </div>
           <div className="game-info">
-            <div>{/* status */}</div>
-            <ol>{/* TODO */}</ol>
+            <div>{status}</div>
+            <ol>{moves}</ol>
           </div>
         </div>
       );
@@ -143,5 +178,6 @@ function Square(props){
     }
     return null;
   }
+  
   
   
